@@ -52,8 +52,8 @@ if __name__ == "__main__":
     t1 = time.time()
 
     for i, j in sets:
-        #print(f"{i} -- {j}")
-        continue
+        print(f"{i} -- {j}")
+        
         
     t2 = time.time()
 
