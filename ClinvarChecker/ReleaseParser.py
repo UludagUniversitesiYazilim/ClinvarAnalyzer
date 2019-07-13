@@ -2,12 +2,25 @@
 def get_assertion(element):
     if element[2].tag == "ReferenceClinVarAssertion":
         desc = element[2][2][1].text
+        mid = get_MeasureSetType(element[2])
     else:
         for elem in element:
             if elem.tag == "ReferenceClinVarAssertion":
                 desc = elem[2][1].text
                 break
-    return desc
+        mid = get_MeasureSetType(elem)
+    return desc, mid
+
+def get_MeasureSetType(element):
+    vid = ''
+    for elem in element:
+        if elem.tag =="GenotypeSet":
+            vid = elem[0].attrib["ID"]
+            break
+        if elem.tag == "MeasureSet":
+            vid = elem.attrib["ID"]
+            break
+    return vid
 
 def get_CVset(path, speed):
     import time
@@ -24,7 +37,7 @@ def get_CVset(path, speed):
     context = et.iterparse(path, events=("end",), tag="ClinVarSet")
 
     for event, element in context:
-        set_id = element.attrib["ID"]
+        set_id = ''
 
         try:
             description = get_assertion(element)
@@ -35,7 +48,7 @@ def get_CVset(path, speed):
 
         set_count += 1
 
-        yield set_id, description
+        yield description
         
         element.clear()
         time.sleep(real_speed)
@@ -52,7 +65,7 @@ if __name__ == "__main__":
     t1 = time.time()
 
     for i, j in sets:
-        print(f"{i} -- {j}")
+        print(f"{j} -- {i}")
         
         
     t2 = time.time()
