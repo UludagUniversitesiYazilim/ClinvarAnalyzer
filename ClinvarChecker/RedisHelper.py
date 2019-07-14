@@ -7,16 +7,37 @@ def connect(host, port):
 
     r = redis.Redis(
         host=host,
-        port=port,
-        password="123456"
+        port=port
     )
 
     return r
 
-def is_changed(r_host, c_id, desc):
-    pass
 
-def insert(r_host, c_id, desc):
-    pass
+def add_variant(redis_host, v_id, desc, on_change, on_new_variant):
+    changed = __check_if_changed(redis_host, v_id, desc)
 
+    if changed[0] == True:
+        on_change(v_id, changed[1])
+        redis_host.set(v_id, desc)
+        return True
+    elif changed[0] == False:
+        return False
+    elif changed[0] == None:
+        on_new_variant(v_id, changed[1])
+        redis_host.set(v_id, desc)
+        return True
     
+
+def __check_if_changed(redis_host, v_id, desc):
+    result = redis_host.get(v_id)
+    dcmp = bytes(desc, 'utf-8')
+    
+
+    if result == dcmp:
+        return False, result
+    elif result == None:
+        return None, None
+    elif result != dcmp:
+        return True, result
+
+

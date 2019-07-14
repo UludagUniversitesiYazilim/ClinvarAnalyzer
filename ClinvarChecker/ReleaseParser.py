@@ -9,7 +9,7 @@ def get_assertion(element):
                 desc = elem[2][1].text
                 break
         mid = get_MeasureSetType(elem)
-    return desc, mid
+    return mid, desc
 
 def get_MeasureSetType(element):
     vid = ''
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     t1 = time.time()
 
     for i, j in sets:
-        print(f"{j} -- {i}")
+        print(f"{i} -- {j}")
         
         
     t2 = time.time()
